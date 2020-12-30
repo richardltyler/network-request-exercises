@@ -5,14 +5,14 @@ function displayUsers(users) {
   users.forEach(user => {
     const stringedUser = JSON.stringify(user);
     displayedUsers.innerHTML += 
-      `<h3>${stringedUser}</h3>`
-  })
-}
+      `<h3>${stringedUser}</h3>`;
+  });
+};
 
 function displayGottenUsers() {
   fetch("http://localhost:3001/api/v1/users")
   .then(response => response.json())
-  .then(boix => displayUsers(boix))
+  .then(boix => displayUsers(boix));
 }
 
 // function displayUsersAfterPost() {
