@@ -2,10 +2,12 @@ displayGottenUsers();
 
 function displayUsers(users) {
   const displayedUsers = document.querySelector('#users-section');
+  let idCounter = 1;
   users.forEach(user => {
     const stringedUser = JSON.stringify(user);
     displayedUsers.innerHTML += 
-      `<h3>${stringedUser}</h3>`;
+      `<h3 id="${idCounter}">${stringedUser}</h3>`;
+    idCounter++;
   });
 };
 
@@ -15,10 +17,21 @@ function displayGottenUsers() {
   .then(boix => displayUsers(boix));
 }
 
-// function displayUsersAfterPost() {
-//   fetch("http://localhost:3001/api/v1/users", {
-//     method: "POST",
-
-//   })
-// }
+function displayUsersAfterPost() {
+  const options = { 
+    method: "POST",
+    body: JSON.stringify({
+      id: `${input}`,
+      name: `${input}`,
+      status: `${input}`,
+      interests: `${input}`,
+    }),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+  fetch("http://localhost:3001/api/v1/users", options)
+    .then(response => response.json())
+    .then(users => displayGottenUsers(users))
+}
 
