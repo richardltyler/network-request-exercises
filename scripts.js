@@ -13,15 +13,19 @@ deleteButton.addEventListener('click', deleteItem);
 
 // get requests and helpers
 function displayGottenData() {
-  fetch(`http://localhost:3001/api/v1/${getRadioButtonValue()}`)
+  fetch(`http://localhost:3001/api/v1/${checkRadioButtonValue()}`)
     .then(response => response.json())
     .then(data => displayData(data))
 }
 
-function getRadioButtonValue() {
+function checkRadioButtonValue() {
   const buttons = Array.from(document.querySelectorAll('.radio-button'));
   const checkedButton = buttons.find(button => button.checked);
-  return checkedButton.value;
+  if (checkedButton) {
+    return checkedButton.value;
+  } else {
+    return false;
+  }
 }
 
 function displayData(dataSet) {
@@ -57,7 +61,7 @@ function formatInputs() {
 
 // post requests and helpers
 function postNewData(id) {
-  if (checkForEmptyInputs()) {
+  if (checkForEmptyInputs() && checkRadioButtonValue()) {
     const options = { 
       method: "POST",
       body: getBodyFormat(id),
@@ -65,9 +69,10 @@ function postNewData(id) {
         'Content-Type': 'application/json'
       }
     }
-    fetch(`http://localhost:3001/api/v1/${getRadioButtonValue()}`, options)
+    fetch(`http://localhost:3001/api/v1/${checkRadioButtonValue()}`, options)
       .then(response => response.json())
       .then(data => displayGottenData(data))
+      .catch(err => console.log(err));
   }
 }
 
@@ -76,37 +81,40 @@ function checkForEmptyInputs() {
 }
 
 function displayDataAfterPost() {
+  postNewData();
+  clearInputFields();
+}
+
+function findID() {
   const displayedDataList = document.querySelectorAll('h3');
   const reversedDataDisplayList = Array.from(displayedDataList).reverse();
   const dataAtHighestID = JSON.parse(reversedDataDisplayList[0].innerText);
-  const id = dataAtHighestID.id + 1;
-  postNewData(id);
-  clearInputFields();
+  return dataAtHighestID.id + 1;
 }
 
 function clearInputFields() {
   userInputs.forEach(field => field.value = '');
 }
 
-function getBodyFormat(id) {
+function getBodyFormat() {
   let body;
-  if (getRadioButtonValue() === 'users') {
+  if (checkRadioButtonValue() === 'users') {
     body = JSON.stringify({
-      id: id,
+      id: findID(),
       name: `${userInputs[0].value}`,
       status: `${userInputs[1].value}`,
       interests: `${userInputs[2].value}`,
     });
-  } else if (getRadioButtonValue() === 'sport-teams') {
+  } else if (checkRadioButtonValue() === 'sport-teams') {
     body = JSON.stringify({
-      id: id,
+      id: findID(),
       name: `${userInputs[0].value}`,
       head_coach: `${userInputs[1].value}`,
       sport: `${userInputs[2].value}`,
     });
-  } else if (getRadioButtonValue() === 'animals') {
+  } else if (checkRadioButtonValue() === 'animals') {
     body = JSON.stringify({
-      id: id,
+      id: findID(),
       name: `${userInputs[0].value}`,
       diet: `${userInputs[1].value}`,
       fun_fact: `${userInputs[2].value}`,
@@ -118,14 +126,12 @@ function getBodyFormat(id) {
 // delete requests and helpers
 function deleteItem() {
   const deleteInput = document.querySelector('#id-to-delete');
-  if (deleteInput.value) {
-    fetch(`http://localhost:3001/api/v1/${getRadioButtonValue()}/${deleteInput.value}`, {method: 'Delete'})
+  if (deleteInput.value && checkRadioButtonValue()) {
+    fetch(`http://localhost:3001/api/v1/${checkRadioButtonValue()}/${deleteInput.value}`, {method: 'Delete'})
       .then(response => response.json())
-      .then(json => {
-        return json;
-      })
       .then(data => displayGottenData(data))
       .then(deleteInput.value = '')
+      .catch(err => console.log(err));
   }
 }
 
