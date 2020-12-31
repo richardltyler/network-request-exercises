@@ -8,15 +8,19 @@
   <body>
     <h1>Richard's Network Request Exercise</h1>
     <nav class="buttons">
-      <input type="radio" class="radio-button" id="users-button">Users</input>
-      <input type="radio" class="radio-button" id="sports-teams-button">Sports Teams</input>
-      <input type="radio" class="radio-button" id="animals-button">Animals</input>
+      <input type="radio" class="radio-button" id="users-button" value="users">Users</input>
+      <input type="radio" class="radio-button" id="sports-teams-button" value="sport-teams">Sports Teams</input>
+      <input type="radio" class="radio-button" id="animals-button" value="animals">Animals</input>
     </nav>
     <section id="user-inputs">
       <input type="text" class="user-input"></input>
       <input type="text" class="user-input"></input>
       <input type="text" class="user-input"></input>
       <button id="post-button">Post</button>
+    </section>
+    <section id="delete-section">
+      <input type="text" id="id-to-delete" placeholder="Id to delete"></input>
+      <button id="delete-button">Delete</button>
     </section>
     <section id="users-section">
     </section>

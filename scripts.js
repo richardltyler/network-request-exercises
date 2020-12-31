@@ -3,11 +3,13 @@ const sportsButton = document.querySelector('#sports-teams-button');
 const animalsButton = document.querySelector('#animals-button');
 const userInputs = document.querySelectorAll('.user-input');
 const postButton = document.querySelector('#post-button');
+const deleteButton = document.querySelector('#delete-button');
 
 usersButton.addEventListener('click', displayGottenUsers);
 sportsButton.addEventListener('click', displayGottenSportsTeams);
 animalsButton.addEventListener('click', displayGottenAnimals);
 postButton.addEventListener('click', displayDataAfterPost);
+deleteButton.addEventListener('click', deleteItem);
 
 function displayData(dataSet) {
   formatInputs();
@@ -114,6 +116,18 @@ function postNewTeam(id) {
   fetch("http://localhost:3001/api/v1/sport-teams", options)
     .then(response => response.json())
     .then(teams => displayGottenSportsTeams(teams))
+}
+
+function deleteItem() {
+  const deleteID = document.querySelector('#id-to-delete');
+  if (deleteID.value) {
+  fetch(`http://localhost:3001/api/v1/users/${deleteID.value}`, {method: 'Delete'})
+    .then(response => response.json())
+    .then(json => {
+      return json;
+    })
+    .then(users => displayGottenUsers(users));
+  }
 }
 
 function formatInputs() {
