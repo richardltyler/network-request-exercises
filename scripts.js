@@ -11,6 +11,12 @@ animalsButton.addEventListener('click', displayGottenAnimals);
 postButton.addEventListener('click', displayDataAfterPost);
 deleteButton.addEventListener('click', deleteItem);
 
+function getRadioButtonValue() {
+  const buttons = Array.from(document.querySelectorAll('.radio-button'));
+  const checkedButton = buttons.find(button => button.checked);
+  return checkedButton.value;
+}
+
 function displayData(dataSet) {
   formatInputs();
   const displayArea = document.querySelector('#users-section');
@@ -22,6 +28,7 @@ function displayData(dataSet) {
       `<h3 id="${idCounter}">${stringedDatum}</h3>`;
     idCounter++;
   });
+  getRadioButtonValue();
 };
 
 function displayGottenUsers() {
@@ -119,9 +126,9 @@ function postNewTeam(id) {
 }
 
 function deleteItem() {
-  const deleteID = document.querySelector('#id-to-delete');
-  if (deleteID.value) {
-  fetch(`http://localhost:3001/api/v1/users/${deleteID.value}`, {method: 'Delete'})
+  const deleteInput = document.querySelector('#id-to-delete');
+  if (deleteInput.value) {
+  fetch(`http://localhost:3001/api/v1/users/${deleteInput.value}`, {method: 'Delete'})
     .then(response => response.json())
     .then(json => {
       return json;
