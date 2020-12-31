@@ -31,7 +31,7 @@ function checkRadioButtonValue() {
 
 function displayData(dataSet) {
   formatInputs();
-  const displayArea = document.querySelector('#users-section');
+  const displayArea = document.querySelector('#display-section');
   displayArea.innerHTML = "";
   let idCounter = 1;
   dataSet.forEach(datum => {
