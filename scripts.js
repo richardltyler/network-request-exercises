@@ -1,4 +1,10 @@
-displayGottenUsers();
+const usersButton = document.querySelector('#users-button');
+const sportsButton = document.querySelector('#sports-teams-button');
+const animalsButton = document.querySelector('#animals-button');
+
+
+
+usersButton.addEventListener('click', displayGottenUsers);
 
 function displayUsers(users) {
   const displayedUsers = document.querySelector('#users-section');
