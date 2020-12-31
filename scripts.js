@@ -1,9 +1,10 @@
 const usersButton = document.querySelector('#users-button');
 const sportsButton = document.querySelector('#sports-teams-button');
 const animalsButton = document.querySelector('#animals-button');
-const userInputs = document.querySelectorAll('.user-input');
 const postButton = document.querySelector('#post-button');
 const deleteButton = document.querySelector('#delete-button');
+
+const userInputs = document.querySelectorAll('.user-input');
 
 usersButton.addEventListener('click', displayGottenData);
 sportsButton.addEventListener('click', displayGottenData);
@@ -11,7 +12,7 @@ animalsButton.addEventListener('click', displayGottenData);
 postButton.addEventListener('click', displayDataAfterPost);
 deleteButton.addEventListener('click', deleteItem);
 
-// get requests and helpers
+// get request and helpers
 function displayGottenData() {
   fetch(`http://localhost:3001/api/v1/${checkRadioButtonValue()}`)
     .then(response => response.json())
@@ -59,12 +60,12 @@ function formatInputs() {
   }
 }
 
-// post requests and helpers
-function postNewData(id) {
+// post request and helpers
+function postNewData() {
   if (checkForEmptyInputs() && checkRadioButtonValue()) {
     const options = { 
       method: "POST",
-      body: getBodyFormat(id),
+      body: getBodyFormat(),
       headers: {
         'Content-Type': 'application/json'
       }
@@ -123,15 +124,23 @@ function getBodyFormat() {
   return body;
 }
 
-// delete requests and helpers
+// delete request and helpers
 function deleteItem() {
   const deleteInput = document.querySelector('#id-to-delete');
-  if (deleteInput.value && checkRadioButtonValue()) {
+  if (checkInputValueForInteger(deleteInput) && deleteInput.value && checkRadioButtonValue()) {
     fetch(`http://localhost:3001/api/v1/${checkRadioButtonValue()}/${deleteInput.value}`, {method: 'Delete'})
       .then(response => response.json())
       .then(data => displayGottenData(data))
       .then(deleteInput.value = '')
       .catch(err => console.log(err));
+  }
+}
+
+function checkInputValueForInteger(input) {
+  if (input.value.isInteger) {
+    return true;
+  } else {
+    return false;
   }
 }
 
