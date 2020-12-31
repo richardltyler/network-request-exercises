@@ -8,6 +8,7 @@ usersButton.addEventListener('click', displayGottenUsers);
 
 function displayUsers(users) {
   const displayedUsers = document.querySelector('#users-section');
+  displayedUsers.innerHTML = "";
   let idCounter = 1;
   users.forEach(user => {
     const stringedUser = JSON.stringify(user);
