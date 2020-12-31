@@ -1,9 +1,10 @@
 const usersButton = document.querySelector('#users-button');
 const sportsButton = document.querySelector('#sports-teams-button');
 const animalsButton = document.querySelector('#animals-button');
-const userInputs = document.querySelectorAll('.user-input');
 const postButton = document.querySelector('#post-button');
 const deleteButton = document.querySelector('#delete-button');
+
+const userInputs = document.querySelectorAll('.user-input');
 
 usersButton.addEventListener('click', displayGottenData);
 sportsButton.addEventListener('click', displayGottenData);
@@ -11,22 +12,26 @@ animalsButton.addEventListener('click', displayGottenData);
 postButton.addEventListener('click', displayDataAfterPost);
 deleteButton.addEventListener('click', deleteItem);
 
+// get request and helpers
 function displayGottenData() {
-  fetch(`http://localhost:3001/api/v1/${getRadioButtonValue()}`)
+  fetch(`http://localhost:3001/api/v1/${checkRadioButtonValue()}`)
     .then(response => response.json())
     .then(data => displayData(data))
 }
 
-function getRadioButtonValue() {
+function checkRadioButtonValue() {
   const buttons = Array.from(document.querySelectorAll('.radio-button'));
   const checkedButton = buttons.find(button => button.checked);
-  console.log(checkedButton.value);
-  return checkedButton.value;
+  if (checkedButton) {
+    return checkedButton.value;
+  } else {
+    return false;
+  }
 }
 
 function displayData(dataSet) {
   formatInputs();
-  const displayArea = document.querySelector('#users-section');
+  const displayArea = document.querySelector('#display-section');
   displayArea.innerHTML = "";
   let idCounter = 1;
   dataSet.forEach(datum => {
@@ -55,51 +60,62 @@ function formatInputs() {
   }
 }
 
+// post request and helpers
+function postNewData() {
+  if (checkForEmptyInputs() && checkRadioButtonValue()) {
+    const options = { 
+      method: "POST",
+      body: getBodyFormat(),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+    fetch(`http://localhost:3001/api/v1/${checkRadioButtonValue()}`, options)
+      .then(response => response.json())
+      .then(data => displayGottenData(data))
+      .catch(err => console.log(err));
+  }
+}
+
+function checkForEmptyInputs() {
+  return Array.from(userInputs).every(field => field.value);
+}
+
 function displayDataAfterPost() {
+  postNewData();
+  clearInputFields();
+}
+
+function findID() {
   const displayedDataList = document.querySelectorAll('h3');
   const reversedDataDisplayList = Array.from(displayedDataList).reverse();
-  const id = parseInt(reversedDataDisplayList[0].id) + 1;
-  postNewData(id);
-  clearInputFields();
+  const dataAtHighestID = JSON.parse(reversedDataDisplayList[0].innerText);
+  return dataAtHighestID.id + 1;
 }
 
 function clearInputFields() {
   userInputs.forEach(field => field.value = '');
 }
 
-function postNewData(id) {
-  const options = { 
-    method: "POST",
-    body: getBodyFormat(id),
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  }
-  fetch(`http://localhost:3001/api/v1/${getRadioButtonValue()}`, options)
-    .then(response => response.json())
-    .then(data => displayGottenData(data))
-    .then()
-}
-
-function getBodyFormat(id) {
+function getBodyFormat() {
   let body;
-  if (getRadioButtonValue() === 'users') {
+  if (checkRadioButtonValue() === 'users') {
     body = JSON.stringify({
-      id: id,
+      id: findID(),
       name: `${userInputs[0].value}`,
       status: `${userInputs[1].value}`,
       interests: `${userInputs[2].value}`,
     });
-  } else if (getRadioButtonValue() === 'sport-teams') {
+  } else if (checkRadioButtonValue() === 'sport-teams') {
     body = JSON.stringify({
-      id: id,
+      id: findID(),
       name: `${userInputs[0].value}`,
       head_coach: `${userInputs[1].value}`,
       sport: `${userInputs[2].value}`,
     });
-  } else if (getRadioButtonValue() === 'animals') {
+  } else if (checkRadioButtonValue() === 'animals') {
     body = JSON.stringify({
-      id: id,
+      id: findID(),
       name: `${userInputs[0].value}`,
       diet: `${userInputs[1].value}`,
       fun_fact: `${userInputs[2].value}`,
@@ -108,16 +124,23 @@ function getBodyFormat(id) {
   return body;
 }
 
+// delete request and helpers
 function deleteItem() {
   const deleteInput = document.querySelector('#id-to-delete');
-  if (deleteInput.value) {
-    fetch(`http://localhost:3001/api/v1/${getRadioButtonValue()}/${deleteInput.value}`, {method: 'Delete'})
+  if (checkInputValueForInteger(deleteInput) && deleteInput.value && checkRadioButtonValue()) {
+    fetch(`http://localhost:3001/api/v1/${checkRadioButtonValue()}/${deleteInput.value}`, {method: 'Delete'})
       .then(response => response.json())
-      .then(json => {
-        return json;
-      })
       .then(data => displayGottenData(data))
-      .then(deleteInput.value = '')
+      .catch(err => console.log(err));
+  }
+  deleteInput.value = '';
+}
+
+function checkInputValueForInteger(input) {
+  if (input.value.isInteger) {
+    return true;
+  } else {
+    return false;
   }
 }
 
