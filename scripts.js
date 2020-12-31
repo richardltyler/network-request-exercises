@@ -131,9 +131,9 @@ function deleteItem() {
     fetch(`http://localhost:3001/api/v1/${checkRadioButtonValue()}/${deleteInput.value}`, {method: 'Delete'})
       .then(response => response.json())
       .then(data => displayGottenData(data))
-      .then(deleteInput.value = '')
       .catch(err => console.log(err));
   }
+  deleteInput.value = '';
 }
 
 function checkInputValueForInteger(input) {
