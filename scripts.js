@@ -87,8 +87,7 @@ function displayDataAfterPost() {
 }
 
 function findID() {
-  const displayedDataList = document.querySelectorAll('h3');
-  const reversedDataDisplayList = Array.from(displayedDataList).reverse();
+  const reversedDataDisplayList = getAllDisplayedValues().reverse();
   const dataAtHighestID = JSON.parse(reversedDataDisplayList[0].innerText);
   return dataAtHighestID.id + 1;
 }
@@ -127,7 +126,7 @@ function getBodyFormat() {
 // delete request and helpers
 function deleteItem() {
   const deleteInput = document.querySelector('#id-to-delete');
-  if (deleteInput.value && checkInputValueForInteger(deleteInput)  && checkRadioButtonValue()) {
+  if (deleteInput.value && checkInputValueForInteger(deleteInput) && checkForExistingID(deleteInput) && checkRadioButtonValue()) {
     fetch(`http://localhost:3001/api/v1/${checkRadioButtonValue()}/${deleteInput.value}`, {method: 'Delete'})
       .then(response => response.json())
       .then(data => displayGottenData(data))
@@ -138,5 +137,16 @@ function deleteItem() {
 
 function checkInputValueForInteger(input) {
   return !isNaN(input.value);
+}
+
+function checkForExistingID(input) {
+  const id = input.value
+  const displayedData = getAllDisplayedValues();
+  return displayedData.some(datum => datum.id === id);
+}
+
+function getAllDisplayedValues() {
+  const displayedDataList = document.querySelectorAll('h3');
+  return Array.from(displayedDataList);
 }
 
