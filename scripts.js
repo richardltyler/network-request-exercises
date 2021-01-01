@@ -127,7 +127,7 @@ function getBodyFormat() {
 // delete request and helpers
 function deleteItem() {
   const deleteInput = document.querySelector('#id-to-delete');
-  if (checkInputValueForInteger(deleteInput) && deleteInput.value && checkRadioButtonValue()) {
+  if (deleteInput.value && checkInputValueForInteger(deleteInput)  && checkRadioButtonValue()) {
     fetch(`http://localhost:3001/api/v1/${checkRadioButtonValue()}/${deleteInput.value}`, {method: 'Delete'})
       .then(response => response.json())
       .then(data => displayGottenData(data))
@@ -137,10 +137,6 @@ function deleteItem() {
 }
 
 function checkInputValueForInteger(input) {
-  if (input.value.isInteger) {
-    return true;
-  } else {
-    return false;
-  }
+  return !isNaN(input.value);
 }
 
